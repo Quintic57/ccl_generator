@@ -4,9 +4,9 @@ const port = 3000;
 const http = require('http');
 const fs = require('fs');
 
-const htmlPage = "ccl_generator.html";
+const htmlPage = "../ccl_generator.html";
 
-fs.readFile('./' + htmlPage, function(err, html){
+fs.readFile(htmlPage, function(err, html){
     if (err) {
         throw err;
     }
