@@ -1,113 +1,217 @@
 <!--
     TODO:
-    - Get downloads to work
     - Get remove button for each row to work
 -->
 
 <!DOCTYPE html>
 <html>
+<head></head>
 <body>
+    <h1>Childrens' Card List Generator</h1>
+    <!--Fun fact: the action attribute specifies the server page that will be
+        processing the form inputs. So in the commented example, I passed in the
+        "server.js" file, which happens to be the web server that hosts this html doc-->
+    <!-- <form action="/server.js">
+      First name: <input type="text" name="fname" id="fname" /><br />
+      Last name: <input type="text" name="lname" id="lname" /><br />
+      <input type="button" value = "Add Full Name" onClick="addRow()" id = "add"><br />
+    </form> -->
+    Deck Name: <input type="text" id="dname"><br />
+    <br />
 
-<h1>Childrens' Card List Generator</h1>
-<!--Fun fact: the action attribute specifies the server page that will be
-    processing the form inputs. So in the commented example, I passed in the
-    "server.js" file, which happens to be the web server that hosts this html doc-->
-<!-- <form action="/server.js">
-  First name: <input type="text" name="fname" id="fname" /><br />
-  Last name: <input type="text" name="lname" id="lname" /><br />
-  <input type="button" value = "Add Full Name" onClick="addRow()" id = "add"><br />
-</form> -->
-First Name: <input type="text" id="fname"><br />
-Last Name:  <input type="text" id="lname"><br />
-<input type="button" value = "Add Full Name" onClick="addRow()" id = "nameadd"><br />
+    Card Name: <input type="text" id="cname"><br />
+    Card Pack:  <input type="text" id="cpack"><br />
+    Price:  <input type="text" id="price"><br />
+    Count: <input type="text" id="count"><br />
+    Storefront: <select id="storefront">
+        <option value="Coolstuff">Coolstuff</option>
+        <option value="Troll and Toad">Troll and Toad</option>
+        <option value="TCG">TCG</option>
+        <option value="Barter">Barter</option>
+        <option value="Not included">Not included</option>
+    </select><br />
+    <input type="button" value = "Add Card" onClick="addRow()" id = "cardadd"><br />
+    <br />
 
-<br />
-<table id="table" border="1">
-    <tr>
-        <th>First name</th>
-        <th>Last name</th>
-        <th>Remove?</th>
-    </tr>
-</table>
+    <table id="cardtable" border="1">
+        <tr>
+            <th>Count</th>
+            <th>Card Name</th>
+            <th>Card Pack</th>
+            <th>Price</th>
+            <th>Store</th>
+            <th>Remove?</th>
+        </tr>
+    </table>
 
-<input type="button" value = "Remove All Rows" onClick="removeAllRows()" id = "allrowremove"><input type="button" value = "Remove Empty Rows" onClick="removeEmptyRows()" id = "emptyrowremove"><br />
-<br />
-<a href="test.txt" download>Download</a>
+    <input type="button" value ="Remove All Rows" onClick="removeAllRows()" id = "allrowremove"><input type="button" value = "Remove Empty Rows" onClick="removeEmptyRows()" id = "emptyrowremove"><br />
+     <br />
 
-<script>
-    function addRow() {
-        var table = document.getElementById("table");
-        var row = document.createElement("tr");
-        var td1 = document.createElement("td");
-        var td2 = document.createElement("td");
-        var td3 = document.createElement("BUTTON");
+    <!-- <a href="test.txt" download>Download</a> -->
+    <input type="button" value="Download" id="download"></input>
 
-        td1.innerHTML = document.getElementById("fname").value;
-        td2.innerHTML  = document.getElementById("lname").value;
-        td3.innerHTML = "Remove.";
-        // td3.onClick = "removeRow()";
+    <!-- Application Scripts -->
+    <script>
+        function addRow() {
+            var table = document.getElementById("cardtable");
+            var row = document.createElement("tr");
 
-        row.appendChild(td1);
-        row.appendChild(td2);
-        row.appendChild(td3);
+            var td1 = document.createElement("td");
+            var td2 = document.createElement("td");
+            var td3 = document.createElement("td");
+            var td4 = document.createElement("td");
+            var td5 = document.createElement("td");
+            var td6 = document.createElement("BUTTON");
 
-        table.children[0].appendChild(row);
+            td1.innerHTML = (document.getElementById("count").value.length == 0) ? "" : document.getElementById("count").value + "x";
+            td2.innerHTML = document.getElementById("cname").value;
+            td3.innerHTML  = document.getElementById("cpack").value;
+            // Price Formatting
+            var temp = document.getElementById("price").value;
+            td4.innerHTML = (temp.length == 0 ? "" : ((temp.length == 1) ? "$.0" + temp : "$" + temp.substring(0, temp.length - 2) + "." + temp.substring(temp.length - 2, temp.length)));
+            td5.innerHTML = document.getElementById("storefront").value;
+            td6.innerHTML = "Remove.";
+            td6.class = "remove";
+            td6.id = table.rows.length;
+            // td6.onClick = removeRow();
 
-        // Clear the fields
-        document.getElementById("fname").value = "";
-        document.getElementById("lname").value = "";
-    }
+            row.appendChild(td1);
+            row.appendChild(td2);
+            row.appendChild(td3);
+            row.appendChild(td4);
+            row.appendChild(td5);
+            row.appendChild(td6);
 
-    // function removeRow() {
-    //     var table = document.getElementById("table");
+            table.children[0].appendChild(row);
 
-    //     table.deleteRow(1);
-    // }
-
-    function removeAllRows() {
-        var table = document.getElementById("table");
-
-        while(table.rows.length > 1) {
-            table.deleteRow(1);
+            // Clear the fields
+            document.getElementById("count").value = "";
+            document.getElementById("cname").value = "";
+            document.getElementById("cpack").value = "";
+            document.getElementById("price").value = "";
         }
-    }
 
-    function removeEmptyRows() {
-        var table = document.getElementById("table");
+        // function removeRow() {
+        //     var table = document.getElementById("cardtable");
 
-        for (var i = 1, row; row = table.rows[i]; i++) {
-            var flag = true;
+        //     table.deleteRow(1);
+        // }
 
-            for (var j = 0, col; col = row.cells[j]; j++) {
-                if (col.innerHTML != "") {
-                    flag = false;
+        function removeAllRows() {
+            var table = document.getElementById("cardtable");
+
+            while(table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+        }
+
+        function removeEmptyRows() {
+            var table = document.getElementById("cardtable");
+
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                var flag = true;
+
+                for (var j = 0, col; j < row.cells.length - 2; j++) {
+                    col = row.cells[j];
+                    if (col.innerHTML != "") {
+                            flag = false;
+                    }
+                }
+                if (flag) {
+                    table.deleteRow(i);
+                    i = i - 1;
                 }
             }
-            if (flag) {
-                table.deleteRow(i);
-                i = i - 1;
+        }
+
+        // document.querySelector("button").addEventListener("click", (event) => {
+        //     alert("JEFF");
+        // });
+
+        document.querySelector("input#count").addEventListener("keyup", (event) => {
+            // Use `.key` instead.
+            if(event.key == "Enter") {
+                document.querySelector("#cardadd").click(); // Things you want to do.
+                event.preventDefault(); // No need to `return false;`.
             }
+        });
+        document.querySelector("input#cname").addEventListener("keyup", (event) => {
+            // Use `.key` instead.
+            if(event.key == "Enter") {
+                document.querySelector("#cardadd").click(); // Things you want to do.
+                event.preventDefault(); // No need to `return false;`.
+            }
+        });
+        document.querySelector("input#cpack").addEventListener("keyup", (event) => {
+            // Use `.key` instead.
+            if(event.key == "Enter") {
+                document.querySelector("#cardadd").click(); // Things you want to do.
+                event.preventDefault(); // No need to `return false;`.
+            }
+        });
+        document.querySelector("input#price").addEventListener("keyup", (event) => {
+            // Use `.key` instead.
+            if(event.key == "Enter") {
+                document.querySelector("#cardadd").click(); // Things you want to do.
+                event.preventDefault(); // No need to `return false;`.
+            }
+        });
+    </script>
+
+    <!-- Download Scripts -->
+    <script>
+        document.querySelector("input#download").addEventListener("click", (event) => {
+            var html = document.querySelector("table#cardtable").outerHTML;
+            var d = new Date();
+            var date = d.getFullYear() + "-"
+                + (d.getMonth() < 10 ? "0" + d.getMonth() : d.getMonth())
+                    + "-" + (d.getDate()) + "_" + String(document.querySelector("input#dname").value);
+
+            export_table_to_csv(html, date);
+        });
+
+        function download_csv(csv, filename) {
+            var csvFile;
+            var downloadLink;
+
+            // CSV FILE
+            csvFile = new Blob([csv], {type: "text/csv"});
+            // Download link
+            downloadLink = document.createElement("a");
+            // File name
+            downloadLink.download = filename;
+            // We have to create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            // Make sure that the link is not displayed
+            downloadLink.style.display = "none";
+            // Add the link to your DOM
+            document.body.appendChild(downloadLink);
+            // Lanzamos
+            downloadLink.click();
         }
-    }
 
-    document.querySelector("#fname").addEventListener("keyup", event => {
-        // Use `.key` instead.
-        if(event.key == "Enter") {
-            document.querySelector("#nameadd").click(); // Things you want to do.
-            event.preventDefault(); // No need to `return false;`.
+        function export_table_to_csv(html, filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("table tr");
+
+            var headerRow = [], header = rows[0].querySelectorAll("td, th");
+            for (var i = 0; i < header.length - 1; i++) {
+                headerRow.push(header[i].innerText);
+            }
+            csv.push(headerRow.join(","));
+            
+            for (var i = 1; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                for (var j = 0; j < cols.length; j++) 
+                    row.push(cols[j].innerText);
+                
+                csv.push(row.join(","));        
+            }
+
+            // Download CSV
+            download_csv(csv.join("\n"), filename);
         }
-    });
-
-    document.querySelector("#lname").addEventListener("keyup", event => {
-        // Use `.key` instead.
-        if(event.key == "Enter") {
-            document.querySelector("#nameadd").click(); // Things you want to do.
-            event.preventDefault(); // No need to `return false;`.
-        }
-    });
-
-    // document.getElementByID("fname").value.outerHTML != ""
-</script>
-
+    </script>
 </body>
 </html>
