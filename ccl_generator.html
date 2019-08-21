@@ -1,0 +1,113 @@
+<!--
+    TODO:
+    - Get downloads to work
+    - Get remove button for each row to work
+-->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Childrens' Card List Generator</h1>
+<!--Fun fact: the action attribute specifies the server page that will be
+    processing the form inputs. So in the commented example, I passed in the
+    "server.js" file, which happens to be the web server that hosts this html doc-->
+<!-- <form action="/server.js">
+  First name: <input type="text" name="fname" id="fname" /><br />
+  Last name: <input type="text" name="lname" id="lname" /><br />
+  <input type="button" value = "Add Full Name" onClick="addRow()" id = "add"><br />
+</form> -->
+First Name: <input type="text" id="fname"><br />
+Last Name:  <input type="text" id="lname"><br />
+<input type="button" value = "Add Full Name" onClick="addRow()" id = "nameadd"><br />
+
+<br />
+<table id="table" border="1">
+    <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Remove?</th>
+    </tr>
+</table>
+
+<input type="button" value = "Remove All Rows" onClick="removeAllRows()" id = "allrowremove"><input type="button" value = "Remove Empty Rows" onClick="removeEmptyRows()" id = "emptyrowremove"><br />
+<br />
+<a href="test.txt" download>Download</a>
+
+<script>
+    function addRow() {
+        var table = document.getElementById("table");
+        var row = document.createElement("tr");
+        var td1 = document.createElement("td");
+        var td2 = document.createElement("td");
+        var td3 = document.createElement("BUTTON");
+
+        td1.innerHTML = document.getElementById("fname").value;
+        td2.innerHTML  = document.getElementById("lname").value;
+        td3.innerHTML = "Remove.";
+        // td3.onClick = "removeRow()";
+
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+
+        table.children[0].appendChild(row);
+
+        // Clear the fields
+        document.getElementById("fname").value = "";
+        document.getElementById("lname").value = "";
+    }
+
+    // function removeRow() {
+    //     var table = document.getElementById("table");
+
+    //     table.deleteRow(1);
+    // }
+
+    function removeAllRows() {
+        var table = document.getElementById("table");
+
+        while(table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+    }
+
+    function removeEmptyRows() {
+        var table = document.getElementById("table");
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            var flag = true;
+
+            for (var j = 0, col; col = row.cells[j]; j++) {
+                if (col.innerHTML != "") {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                table.deleteRow(i);
+                i = i - 1;
+            }
+        }
+    }
+
+    document.querySelector("#fname").addEventListener("keyup", event => {
+        // Use `.key` instead.
+        if(event.key == "Enter") {
+            document.querySelector("#nameadd").click(); // Things you want to do.
+            event.preventDefault(); // No need to `return false;`.
+        }
+    });
+
+    document.querySelector("#lname").addEventListener("keyup", event => {
+        // Use `.key` instead.
+        if(event.key == "Enter") {
+            document.querySelector("#nameadd").click(); // Things you want to do.
+            event.preventDefault(); // No need to `return false;`.
+        }
+    });
+
+    // document.getElementByID("fname").value.outerHTML != ""
+</script>
+
+</body>
+</html>
