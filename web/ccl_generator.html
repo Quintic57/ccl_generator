@@ -1,6 +1,11 @@
 <!--
     TODO:
     - Get remove button for each row to work
+    - Have two columns for price; have the user inputted one the price for a single card, and the
+        other column be the total price i.e. (count * single price)
+    - Create option to import CSV file (so you can continue from where you were working)
+    - Create option to sort by card name
+    - When 'Not included' Store option is selected, black out Card Pack and Price attributes
 -->
 
 <!DOCTYPE html>
@@ -40,6 +45,7 @@
             <th>Card Pack</th>
             <th>Price</th>
             <th>Store</th>
+            <th>Deck</th>
             <th>Remove?</th>
         </tr>
     </table>
@@ -61,7 +67,8 @@
             var td3 = document.createElement("td");
             var td4 = document.createElement("td");
             var td5 = document.createElement("td");
-            var td6 = document.createElement("BUTTON");
+            var td6 = document.createElement("td");
+            var td7 = document.createElement("BUTTON");
 
             td1.innerHTML = (document.getElementById("count").value.length == 0) ? "" : document.getElementById("count").value + "x";
             td2.innerHTML = document.getElementById("cname").value;
@@ -70,9 +77,10 @@
             var temp = document.getElementById("price").value;
             td4.innerHTML = (temp.length == 0 ? "" : ((temp.length == 1) ? "$.0" + temp : "$" + temp.substring(0, temp.length - 2) + "." + temp.substring(temp.length - 2, temp.length)));
             td5.innerHTML = document.getElementById("storefront").value;
-            td6.innerHTML = "Remove.";
-            td6.class = "remove";
-            td6.id = table.rows.length;
+            td6.innerHTML = String(document.querySelector("input#dname").value);
+            td7.innerHTML = "Remove.";
+            td7.class = "remove";
+            td7.id = table.rows.length;
             // td6.onClick = removeRow();
 
             row.appendChild(td1);
@@ -81,6 +89,7 @@
             row.appendChild(td4);
             row.appendChild(td5);
             row.appendChild(td6);
+            row.appendChild(td7);
 
             table.children[0].appendChild(row);
 
@@ -111,7 +120,7 @@
             for (var i = 1, row; row = table.rows[i]; i++) {
                 var flag = true;
 
-                for (var j = 0, col; j < row.cells.length - 2; j++) {
+                for (var j = 0, col; j < row.cells.length - 3; j++) {
                     col = row.cells[j];
                     if (col.innerHTML != "") {
                             flag = false;
@@ -163,9 +172,10 @@
         document.querySelector("input#download").addEventListener("click", (event) => {
             var html = document.querySelector("table#cardtable").outerHTML;
             var d = new Date();
+            var month = d.getMonth() + 1;
             var date = d.getFullYear() + "-"
-                + (d.getMonth() < 10 ? "0" + d.getMonth() : d.getMonth())
-                    + "-" + (d.getDate()) + "_" + String(document.querySelector("input#dname").value);
+                + (month < 10 ? "0" + month : month)
+                    + "-" + (d.getDate()) + "_Report";
 
             export_table_to_csv(html, date);
         });
